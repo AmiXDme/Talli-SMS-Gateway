@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talli - ডিজিটাল হিসাব খাতা</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1F4E78;
+            --secondary: #2E75B6;
+            --accent: #FFC000;
+            --success: #28a745;
+            --danger: #dc3545;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border: #dee2e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Hind Siliguri', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .input-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        input {
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(46, 117, 182, 0.1);
+        }
+
+        .btn-add {
+            grid-column: 1 / -1;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .table-container {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fbff;
+        }
+
+        tr:hover {
+            background-color: #f1f4f9;
+        }
+
+        .message-cell {
+            min-width: 300px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: #fff8e1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px dashed var(--accent);
+        }
+
+        .copy-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .sms-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .grid-form {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        #settingsPanel {
+            background: #eef2f7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid var(--secondary);
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>ডিজিটাল হিসাব খাতা (Talli)</h1>
+            <p>সততা ও স্বচ্ছতার সাথে আপনার হিসাব রাখুন</p>
+        </header>
+
+        <div style="text-align: right; margin-bottom: 15px;">
+            <button onclick="toggleSettings()"
+                style="background: var(--secondary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600;">⚙️
+                SMS গেটওয়ে সেটিংস</button>
+        </div>
+
+        <div id="settingsPanel">
+            <h3 style="margin-bottom: 15px;">Android SMS Gateway সেটিংস</h3>
+            <div class="grid-form">
+                <div class="form-group">
+                    <label>গেটওয়ে আইপি (যেমন: http://192.168.0.101:8080)</label>
+                    <input type="text" id="gatewayIp" placeholder="http://0.0.0.0:8080">
+                </div>
+                <div class="form-group">
+                    <label>এপিআই কী (যদি থাকে)</label>
+                    <input type="text" id="apiKey" placeholder="Key if required">
+                </div>
+                <button class="btn-add" style="background: var(--success); margin: 0; width: auto; margin-right: 10px;"
+                    onclick="saveSettings()">সেভ করুন</button>
+                <button class="btn-add" style="background: var(--danger); margin: 0; width: auto;"
+                    onclick="clearAllData()">সব ডাটা মুছুন ⚠️</button>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">নির্দেশনা: অ্যান্ড্রয়েড ফোনে
+                <a href="https://play.google.com/store/apps/details?id=com.pabrikaplikasi.simplesmsgateway"
+                    target="_blank" style="color: var(--secondary); font-weight: 600;">Simple SMS Gateway</a>
+                অ্যাপটি ওপেন করে স্টার্ট দিন। সেখানে দেওয়া IP টি এখানে লিখুন।
+            </p>
+        </div>
+
+        <div class="input-card">
+            <div class="grid-form">
+                <div class="form-group">
+                    <label>কর্মচারীর নাম</label>
+                    <input type="text" id="name" placeholder="নাম লিখুন...">
+                </div>
+                <div class="form-group">
+                    <label>মোবাইল নম্বর</label>
+                    <input type="tel" id="phone" placeholder="০১৭XXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>কত টাকা দিলেন (Paid)</label>
+                    <input type="number" id="paid" placeholder="০.০০">
+                </div>
+                <div class="form-group">
+                    <label>অতিরিক্ত (Extra)</label>
+                    <input type="number" id="extra" placeholder="০.০০">
+                </div>
+                <div class="form-group">
+                    <label>কম/জরিমানা (Less)</label>
+                    <input type="number" id="less" placeholder="০.০০">
+                </div>
+                <div class="form-group">
+                    <label>বকেয়া (Due)</label>
+                    <input type="number" id="due" placeholder="০.০০">
+                </div>
+                <button class="btn-add" onclick="addData()">হিসাব যোগ করুন +</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="talliTable">
+                <thead>
+                    <tr>
+                        <th>তারিখ ও সময়</th>
+                        <th>নাম</th>
+                        <th>মোবাইল</th>
+                        <th>দেওয়া হয়েছে</th>
+                        <th>অতিরিক্ত</th>
+                        <th>কম/জরিমানা</th>
+                        <th>বকেয়া</th>
+                        <th>অটো মেসেজ</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will appear here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Load data from LocalStorage
+        let talliData = JSON.parse(localStorage.getItem('talli_db')) || [];
+        let config = JSON.parse(localStorage.getItem('talli_config')) || { ip: '', key: '' };
+
+        document.getElementById('gatewayIp').value = config.ip;
+        document.getElementById('apiKey').value = config.key;
+
+        renderTable();
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function saveSettings() {
+            config.ip = document.getElementById('gatewayIp').value;
+            config.key = document.getElementById('apiKey').value;
+            localStorage.setItem('talli_config', JSON.stringify(config));
+            alert('সেটিংস সেভ হয়েছে!');
+            toggleSettings();
+        }
+
+        function addData() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const paid = document.getElementById('paid').value || 0;
+            const extra = document.getElementById('extra').value || 0;
+            const less = document.getElementById('less').value || 0;
+            const due = document.getElementById('due').value || 0;
+
+            if (!name) {
+                alert('দয়া করে নাম লিখুন!');
+                return;
+            }
+
+            const now = new Date();
+            const dateTime = now.toLocaleString('bn-BD');
+
+            let message = `সম্মানিত ${name}, আজ আপনাকে ${paid || 0}/- টাকা দেওয়া হয়েছে।`;
+            if (extra && extra > 0) message += ` অতিরিক্ত: ${extra}/- ,`;
+            if (less && less > 0) message += ` কম/জরিমানা: ${less}/- ।`;
+            else message += ` ।`;
+            message += ` আপনার বর্তমান বকেয়া: ${due || 0} টাকা। ধন্যবাদ।`;
+
+            const newData = {
+                id: Date.now(),
+                dateTime,
+                name,
+                phone,
+                paid,
+                extra,
+                less,
+                due,
+                message
+            };
+
+            talliData.unshift(newData);
+            localStorage.setItem('talli_db', JSON.stringify(talliData));
+
+            // Reset
+            ['name', 'phone', 'paid', 'extra', 'less', 'due'].forEach(id => document.getElementById(id).value = '');
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            talliData.forEach(item => {
+                const row = `
+                <tr>
+                    <td>${item.dateTime}</td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.phone}</td>
+                    <td>${item.paid}</td>
+                    <td>${item.extra}</td>
+                    <td>${item.less}</td>
+                    <td><strong>${item.due}</strong></td>
+                    <td>
+                        <div class="message-cell">
+                            ${item.message}
+                            <button class="copy-btn" onclick="copyMsg('${item.message.replace(/'/g, "\\'")}')">কপি</button>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex;">
+                            <button class="sms-btn" onclick="sendSMS('${item.phone}', '${item.message.replace(/'/g, "\\'")}')">SMS পাঠান</button>
+                            <button class="btn-delete" onclick="deleteData(${item.id})">মুছুন</button>
+                        </div>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function sendSMS(phone, message) {
+            if (!config.ip) {
+                alert('প্রথমে সেটিংস থেকে আপনার ফোনের Gateway IP টি সেট করুন!');
+                toggleSettings();
+                return;
+            }
+
+            if (!phone) {
+                alert('মোবাইল নম্বর পাওয়া যায়নি!');
+                return;
+            }
+
+            try {
+                // Send request to our local Python Proxy
+                const response = await fetch('/proxy-sms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        phone: phone,
+                        message: message,
+                        gateway_ip: config.ip // Send the IP to the Python server
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    alert(`${phone} নম্বরে SMS পাঠানোর কমান্ড সফলভাবে পাঠানো হয়েছে!`);
+                } else {
+                    throw new Error(result.error || "Unknown error");
+                }
+            } catch (err) {
+                console.error(err);
+                alert('ভুল হয়েছে! নিশ্চিত করুন যে আপনার Python সার্ভারটি (app.py) চলছে এবং সেটিংস-এ সঠিক IP দেওয়া আছে।');
+            }
+        }
+
+        function copyMsg(msg) {
+            navigator.clipboard.writeText(msg).then(() => alert('মেসেজটি কপি হয়েছে!'));
+        }
+
+        function deleteData(id) {
+            if (confirm('মুছে ফেলতে চান?')) {
+                talliData = talliData.filter(item => item.id !== id);
+                localStorage.setItem('talli_db', JSON.stringify(talliData));
+                renderTable();
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('আপনি কি নিশ্চিত যে আপনি সব হিসাব এবং সেটিংস মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না।')) {
+                localStorage.removeItem('talli_db');
+                localStorage.removeItem('talli_config');
+                alert('সব ডাটা সফলভাবে মুছে ফেলা হয়েছে।');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+
+</html>
